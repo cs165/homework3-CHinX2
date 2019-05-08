@@ -77,9 +77,9 @@ class Flashcard {
         word: this.word,
         decide: 1
       };
-      document.dispatchEvent(new CustomEvent('card-ans', { detail: eventInfo}));
       event.currentTarget.style.display = 'none';
-      return;
+      document.dispatchEvent(new CustomEvent('card-ans', { detail: eventInfo}));
+      
     }
     event.currentTarget.style.transform = 'translate( 0px, 0px)';
     event.currentTarget.style.transitionDuration = '0.6s';

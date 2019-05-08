@@ -14,12 +14,21 @@ class ResultsScreen {
   show(numberCorrect, numberWrong) {
     this.containerElement.classList.remove('inactive');
     this.percent = (numberCorrect*100) / (numberCorrect +numberWrong);
-    document.querySelector('.percent').textContent = this.percent;
+    document.querySelector('.percent').textContent = this.percent.toFixed(1);
     document.querySelectorAll('.correct')[1].textContent = numberCorrect;
     document.querySelectorAll('.incorrect')[1].textContent = numberWrong;
+
+    const btn1 = document.querySelector('.continue');
+    const btn2 = document.querySelector('.to-menu');
+    this._backToMain = this._backToMain.bind(this);
+    btn2.addEventListener('click',this._backToMain);
   }
 
   hide() {
     this.containerElement.classList.add('inactive');
+  }
+
+  _backToMain(event) {
+    window.location.reload();
   }
 }

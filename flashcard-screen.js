@@ -24,9 +24,12 @@ class FlashcardScreen {
     this.last = null;
     this.last_val = 0;
     this.incorrectTab = [];
+    this.cnt = 0
+
     for (let nkey in FLASHCARD_DECKS[i]['words'])
     {
       //console.log(nkey);
+      this.cnt = this.cnt + 1;
       const card = new Flashcard(flashcardContainer, nkey, FLASHCARD_DECKS[i]['words'][nkey]);
     }
     document.addEventListener('card-ans', this._ansSelect);
@@ -59,8 +62,8 @@ class FlashcardScreen {
     
     if(event.detail.decide) {
       this.selected = this.selected + 1;
-      if(event.detail.val<0) incorrectTab.push(event.detail.word);
-      if(this.selected === 5) {
+      if(event.detail.val<0) this.incorrectTab.push(event.detail.word);
+      if(this.selected === this.cnt) {
         const eventInfo = {
           correct: this.right,
           incorrect: this.wrong,
