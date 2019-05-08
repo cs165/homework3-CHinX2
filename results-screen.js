@@ -13,6 +13,10 @@ class ResultsScreen {
 
   show(numberCorrect, numberWrong) {
     this.containerElement.classList.remove('inactive');
+    this.percent = (numberCorrect*100) / (numberCorrect +numberWrong);
+    document.querySelector('.percent').textContent = this.percent;
+    document.querySelectorAll('.correct')[1].textContent = numberCorrect;
+    document.querySelectorAll('.incorrect')[1].textContent = numberWrong;
   }
 
   hide() {
