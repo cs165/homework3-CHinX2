@@ -27,6 +27,11 @@ class MenuScreen {
   }
 
   hide() {
+    // remove button
+    var list = document.querySelector('#choices');
+    while(list.hasChildNodes()) {
+      list.removeChild(list.firstChild);
+    }
     this.containerElement.classList.add('inactive');
   }
 
@@ -34,8 +39,11 @@ class MenuScreen {
     console.log(event.currentTarget.textContent);
     const eventInfo = {
       id: event.currentTarget.id,
-      name: event.currentTarget.textContent
+      name: event.currentTarget.textContent,
+      key: Object.keys(FLASHCARD_DECKS[event.currentTarget.id]['words']),
+      val: FLASHCARD_DECKS[event.currentTarget.id]['words']
     };
+    event.currentTarget.style.display = 'none';
     document.dispatchEvent(new CustomEvent('menu-click', { detail: eventInfo}));
   }
 }

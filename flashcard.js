@@ -10,7 +10,7 @@ class Flashcard {
   constructor(containerElement, frontText, backText, nextCard) {
     this.containerElement = containerElement;
     this.nextCard = nextCard;
-    if(frontText == undefined) return;
+    //if(frontText === undefined || frontText === null)return;
 
     this._flipCard = this._flipCard.bind(this);
     this._dragMove = this._dragMove.bind(this);
@@ -24,7 +24,9 @@ class Flashcard {
     this.offsetX = 0;
     this.offsetY = 0;
     this.dragStarted = false;
-    this.word = frontText;
+    this.key = frontText;
+    this.val = backText;
+
 
     this.flashcardElement.addEventListener('pointerup', this._flipCard);
     this.flashcardElement.addEventListener('pointerdown', this._dragStart);
@@ -74,13 +76,14 @@ class Flashcard {
 
     if(this.offsetX >= 150 || this.offsetX <= -150)
     {
-      event.currentTarget.style.display = 'none';
       const eventInfo = {
-        val: (this.offsetX < 0) ? -1 : 1,
-        word: this.word,
+        correct: (this.offsetX < 0) ? -1 : 1,
+        key: this.key,
+        val: this.val,
         decide: 1
       };
       document.dispatchEvent(new CustomEvent('card-ans', { detail: eventInfo}));
+      this.containerElement.removeChild(this.containerElement.firstChild);
       this.nextCard();
       return;
     }
@@ -102,19 +105,22 @@ class Flashcard {
     translateX + 'px, ' + translateY + 'px)' + 'rotate('
     + rotation + 'deg)' ;
     event.currentTarget.style.transitionDuration = '0s';
+
     if(translateX >= 150 || translateX <= -150)
     {
       const eventInfo = {
-        val: (translateX < 0) ? -1 : 1,
-        word: this.word,
+        correct: (translateX < 0) ? -1 : 1,
+        key: this.key,
+        val: this.val,
         decide: 0
       };
       document.dispatchEvent(new CustomEvent('card-ans', { detail: eventInfo}));
     }
     else {
       const eventInfo = {
-        val: 0,
-        word: this.word,
+        correct: 0,
+        key: this.key,
+        val: this.val,
         decide: 0
       };
       document.dispatchEvent(new CustomEvent('card-ans', { detail: eventInfo}));

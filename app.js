@@ -19,12 +19,18 @@ class App {
     this.results = new ResultsScreen(resultElement);
 
     this.menu.show();
+
     this.menuClicked = this.menuClicked.bind(this);
-    document.addEventListener('menu-click', this.menuClicked);
     this.resultShow = this.resultShow.bind(this);
-    document.addEventListener('card-result', this.resultShow);
     this.startOver = this.startOver.bind(this);
+    this.continueCur = this.continueCur.bind(this);
+    this.backToMenu = this.backToMenu.bind(this);
+
+    document.addEventListener('menu-click', this.menuClicked);
+    document.addEventListener('card-result', this.resultShow);
     document.addEventListener('start-over', this.startOver);
+    document.addEventListener('continue', this.continueCur);
+    document.addEventListener('back-menu', this.backToMenu);
     
 
     // Uncomment this pair of lines to see the "flashcard" screen:
@@ -37,20 +43,32 @@ class App {
   }
 
   menuClicked(event) {
-    console.log(event.detail.id);
+    //console.log(event.detail.id);
     this.menu.hide();
-    this.flashcards.show(event.detail.id);
+    this.flashcards.show(event.detail.id, event.detail.key, event.detail.val);
   }
   resultShow(event) {
     //this.menu.hide();
     this.flashcards.hide();
-    this.results.show(event.detail.correct, event.detail.incorrect, event.detail.wTable, event.detail.id);
+    this.results.show(event.detail.correct, event.detail.incorrect, event.detail.id, event.detail.wKey, event.detail.wVal);
   }
 
   startOver(event) {
-    console.log(event.detail.id);
+    //console.log(event.detail.id);
     console.log('start-over')
     this.results.hide();
-    this.flashcards.show(event.detail.id);
+    this.flashcards.show(event.detail.id, event.detail.key, event.detail.val);
+  }
+
+  continueCur(event) {
+    console.log('continue');
+    this.results.hide();
+    this.flashcards.show(event.detail.id, event.detail.wKey, event.detail.wVal);
+
+  }
+
+  backToMenu(event) {
+    this.results.hide();
+    this.menu.show();
   }
 }
