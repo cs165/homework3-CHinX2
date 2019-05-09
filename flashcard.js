@@ -7,8 +7,10 @@
 // - Adding additional fields
 
 class Flashcard {
-  constructor(containerElement, frontText, backText) {
+  constructor(containerElement, frontText, backText, nextCard) {
     this.containerElement = containerElement;
+    this.nextCard = nextCard;
+    if(frontText == undefined) return;
 
     this._flipCard = this._flipCard.bind(this);
     this._dragMove = this._dragMove.bind(this);
@@ -72,14 +74,15 @@ class Flashcard {
 
     if(this.offsetX >= 150 || this.offsetX <= -150)
     {
+      event.currentTarget.style.display = 'none';
       const eventInfo = {
         val: (this.offsetX < 0) ? -1 : 1,
         word: this.word,
         decide: 1
       };
-      event.currentTarget.style.display = 'none';
       document.dispatchEvent(new CustomEvent('card-ans', { detail: eventInfo}));
-      
+      this.nextCard();
+      return;
     }
     event.currentTarget.style.transform = 'translate( 0px, 0px)';
     event.currentTarget.style.transitionDuration = '0.6s';
@@ -97,7 +100,8 @@ class Flashcard {
     const rotation = 0.2 * translateX; 
     event.currentTarget.style.transform = 'translate(' + 
     translateX + 'px, ' + translateY + 'px)' + 'rotate('
-    + rotation + 'deg)';
+    + rotation + 'deg)' ;
+    event.currentTarget.style.transitionDuration = '0s';
     if(translateX >= 150 || translateX <= -150)
     {
       const eventInfo = {

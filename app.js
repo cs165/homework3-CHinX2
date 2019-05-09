@@ -23,7 +23,10 @@ class App {
     document.addEventListener('menu-click', this.menuClicked);
     this.resultShow = this.resultShow.bind(this);
     document.addEventListener('card-result', this.resultShow);
+    this.startOver = this.startOver.bind(this);
+    document.addEventListener('start-over', this.startOver);
     
+
     // Uncomment this pair of lines to see the "flashcard" screen:
     //this.menu.hide();
     //this.flashcards.show();
@@ -39,8 +42,15 @@ class App {
     this.flashcards.show(event.detail.id);
   }
   resultShow(event) {
-    this.menu.hide();
+    //this.menu.hide();
     this.flashcards.hide();
-    this.results.show(event.detail.correct, event.detail.incorrect);
+    this.results.show(event.detail.correct, event.detail.incorrect, event.detail.wTable, event.detail.id);
+  }
+
+  startOver(event) {
+    console.log(event.detail.id);
+    console.log('start-over')
+    this.results.hide();
+    this.flashcards.show(event.detail.id);
   }
 }

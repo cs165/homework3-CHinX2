@@ -13,10 +13,12 @@ class FlashcardScreen {
   }
 
   show(i) {
+    console.log("AA");
     this.containerElement.classList.remove('inactive');
-    const flashcardContainer = document.querySelector('#flashcard-container');
+    this.flashcardContainer = document.querySelector('#flashcard-container');
     
     this._ansSelect = this._ansSelect.bind(this);
+    this.nextCard = this.nextCard.bind(this);
     
     this.selected = 0;
     this.right = 0;
@@ -24,19 +26,31 @@ class FlashcardScreen {
     this.last = null;
     this.last_val = 0;
     this.incorrectTab = [];
-    this.cnt = 0
+    this.id = i;
+    document.querySelector('.correct').textContent = this.right;
+    document.querySelector('.incorrect').textContent = this.wrong;
 
-    for (let nkey in FLASHCARD_DECKS[i]['words'])
-    {
-      //console.log(nkey);
-      this.cnt = this.cnt + 1;
-      const card = new Flashcard(flashcardContainer, nkey, FLASHCARD_DECKS[i]['words'][nkey]);
-    }
+    this.nkey = Object.keys(FLASHCARD_DECKS[i]['words']);
+    this.nval = FLASHCARD_DECKS[i]['words'];
+    this.cnt = this.nkey.length;
+    console.log(this.cnt + this.nkey + this.nval);
+    //console.log(nkey);
+    // for(tmp in )
+    
+    const card = new Flashcard(this.flashcardContainer, this.nkey[0], this.nval[this.nkey[0]], this.nextCard);
     document.addEventListener('card-ans', this._ansSelect);
   }
 
   hide() {
     this.containerElement.classList.add('inactive');
+  }
+
+  nextCard() {
+    console.log('now:'+this.selected);
+    if(this.selected < (this.right + this.wrong)) { 
+      this.selected = this.right + this.wrong;
+      const card = new Flashcard(this.flashcardContainer, this.nkey[this.selected], this.nval[this.nkey[this.selected]], this.nextCard );
+    }
   }
 
   _ansSelect(event) {
@@ -45,29 +59,34 @@ class FlashcardScreen {
       this.right = this.right + 1;
       this.last = event.detail.word;
       this.last_val = 1;
+      document.body.style.backgroundColor = '#97b7b7';
     }
     else if(event.detail.val<0  && this.last !== event.detail.word) {
       this.wrong = this.wrong + 1;
       this.last = event.detail.word;
       this.last_val = 0;
+      document.body.style.backgroundColor = '#97b7b7';
     }
     else if(event.detail.val === 0 && this.last === event.detail.word) {
       if(this.last_val) this.right = this.right - 1;
       else this.wrong = this.wrong - 1;
       this.last = null;
+      document.body.style.backgroundColor = '#d0e6df';
     }
     console.log(this.last+' '+this.right+' '+this.wrong+' '+this.selected);
     document.querySelector('.correct').textContent = this.right;
     document.querySelector('.incorrect').textContent = this.wrong;
     
     if(event.detail.decide) {
-      this.selected = this.selected + 1;
+      //this.selected = this.selected + 1;
+      document.body.style.backgroundColor = '#d0e6df';
       if(event.detail.val<0) this.incorrectTab.push(event.detail.word);
-      if(this.selected === this.cnt) {
+      if((this.right + this.wrong) === this.cnt) {
         const eventInfo = {
           correct: this.right,
           incorrect: this.wrong,
-          wTable: this.incorrectTab
+          wTable: this.incorrectTab,
+          id: this.id
         };
         document.dispatchEvent(new CustomEvent('card-result', { detail: eventInfo}));
         return;
